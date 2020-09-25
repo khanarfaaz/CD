@@ -1,6 +1,6 @@
 terraform {
   backend "s3" {
-    bucket  = "techlanders-statefile"
+    bucket  = "cloud9-epl"
     key  = "terraform/state"
     region = "us-east-2"
 #   access_key = "XXXXXXXXXXXXXXXXXXXXXX"
@@ -12,14 +12,14 @@ provider "aws" {
   region = "us-east-1"
 }
 
-resource "aws_instance" "myawsserver" {
-  ami = "ami-0b16724fe8e66e4ec"
-  key_name = "gagan-cicd"
+resource "aws_instance" "EPL" {
+  ami = "ami-03abffefa1e817fcc"
+  key_name = "EPL"
   instance_type = "t2.micro"
 
   tags = {
-    Name = "Gagan-Ubuntu-Server"
-    Env = "Prod"
+    Name = "EPL"
+    Env = "Cloud"
   }
   provisioner "local-exec" {
     command = "echo The servers IP address is ${self.public_ip} && echo ${self.private_ip} myawsserver >> /etc/hosts"
@@ -34,11 +34,11 @@ provisioner "remote-exec" {
     user     = "ubuntu"
     insecure = "true"
     private_key = "${file("/tmp/gagan-cicd.pem")}"
-    host     =  aws_instance.myawsserver.public_ip
+    host     =  aws_instance.EPL.public_ip
   }
 }
 }
 
-output "myawsserver-ip" {
-  value = "${aws_instance.myawsserver.public_ip}"
+output "EPL-ip" {
+  value = "${aws_instance.EPL.public_ip}"
 }

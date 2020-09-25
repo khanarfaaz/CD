@@ -11,9 +11,17 @@ terraform {
 provider "aws" {
   region = "us-east-1"
 }
+data "aws_ami" "example" {
+  most_recent      = true
+  owners           = ["self"]
+  filter {
+    name   = "name"
+    values = ["EPL-*"]
+  }
+}
 
 resource "aws_instance" "EPL" {
-  ami = "ami-03abffefa1e817fcc"
+  ami = data.aws_ami.example.id
   key_name = "EPL"
   instance_type = "t2.micro"
 
@@ -22,7 +30,7 @@ resource "aws_instance" "EPL" {
     Env = "Cloud"
   }
   provisioner "local-exec" {
-    command = "echo The servers IP address is ${self.public_ip} && echo ${self.private_ip} EPL >> /etc/hosts"
+    command = "echo ${self.public_ip} > /etc/ansible/hosts"
   }
  
 provisioner "remote-exec" {

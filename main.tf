@@ -22,18 +22,18 @@ resource "aws_instance" "EPL" {
     Env = "Cloud"
   }
   provisioner "local-exec" {
-    command = "echo The servers IP address is ${self.public_ip} && echo ${self.private_ip} myawsserver >> /etc/hosts"
+    command = "echo The servers IP address is ${self.public_ip} && echo ${self.private_ip} EPL >> /etc/hosts"
   }
  
 provisioner "remote-exec" {
     inline = [
-     "touch /tmp/gagandeep"
+     "touch /tmp/EPL"
      ]
  connection {
     type     = "ssh"
     user     = "ubuntu"
     insecure = "true"
-    private_key = "${file("/tmp/gagan-cicd.pem")}"
+    private_key = "${file("/tmp/EPL.pem")}"
     host     =  aws_instance.EPL.public_ip
   }
 }
